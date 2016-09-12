@@ -6,4 +6,5 @@
  * Time: 11:52 PM
  */
  echo" new file";
+ echo "another line"
 ?>
