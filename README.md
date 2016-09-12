@@ -1,2 +1,2 @@
 # jengo-pros
-- design DB - iddy
+- design DB - dennis
