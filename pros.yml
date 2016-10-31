@@ -1,0 +1,143 @@
+# Proffesionals/Experts API - Pros API 
+# Pros API spec in YAML
+swagger: '2.0'
+info:
+  title: Pros API
+  description:  Pros API - is an API to track Contractor work done by proffessionals or experts 
+                in different domain. A contactor can be a person or a company.
+  version: "0.0.1"
+# Host Url
+host: api.pros.com
+produces: 
+  -application/json
+  -xml
+paths:
+  /pros:
+    get:
+      desciption: |
+        The pros endpoint returns information about contractors who are offering 
+        different services. The responce includes contractor information like names and contact details.
+        Also all services contractor has offered to different clients and his/her proffessional education.
+      parameters:
+        - name: offset
+          in: query
+          description: Offset the list of returned results by this amount. Default is zero.
+          required: false
+          type: integer
+          format: int
+        - name: limit
+          in: query
+          description: Number of items to retrieve. Default is 10. Maximum is 100.
+          required: false
+          type: integer
+          format: int
+      responces: 
+        200: 
+          description: A array of contractors with their information.
+          schema: 
+            $ref: '#definitions/Contractor'
+        default:
+          description: Unexpected Error
+          schema:
+            $ref: '#/definitions/Error'
+  /pros/{contractorId}:
+    get:
+      description: |
+        The pros endpoint returns information for a specific contractor.
+      parameters:
+        - name: contractorId
+          in: query
+          description: Unique contractor identifier which its result will be returned.
+          required: true
+          type: integer
+      responces:
+        200:
+          description: Contractor's information.
+          schema:
+            $ref: '#definitions/Contractor'
+        default:
+          description: Unexpected Error
+          schema:
+            $ref: '#/definitions/Error'
+  /pros:
+    post:
+      description: |
+        The pros POST endpoint is used to create new contractor profile.
+      parameters:
+        - 
+definitions:
+  Contractor:
+    type: Object
+    properties:
+      contractorId:
+        type: Integer
+        description: Unique identifier representing a specific contractor.
+      emailAddress:
+        type: String
+        description: Email address of a contractor.
+      address:
+        type: Object
+        items:
+          $ref: '#/definitions/Address'
+  Person:
+    allOf:
+      $ref: '#definitions/Contractor'
+      properties:
+        firstName:
+          type: String
+          description: First name of a contractor.
+        middleName:
+          type: String
+          description: Middle name of a contractor.
+        lastName:
+          type: String
+          description: Last name of a contractor.
+        phones:
+          type: array
+          items:
+            $ref: '#definitions/Phone'
+        profile:
+          type: Object
+          item:
+            $ref: '#definitions/Profile'
+        prosEducations:
+          type: array
+          items:
+            $ref: '#definitions/ProsEducation'
+        prosAttachments:
+          type: array
+          items:
+            $ref: '#definitions/ProsAttachment'
+  Address:
+    type: Object
+    properties:
+      addressId:
+        type: integer
+        description: Unique identifier representing a specific address to a contractor.
+      street:
+        type: String
+        description: Street name of an address.
+      district:
+        type: String
+        description: District name of an address.
+      region:
+        type: String
+        description: Region name of an address.
+      country:
+        type: String
+        descritpion: Country name of an address.
+      contractor:
+        type: array
+        items:
+          $ref: '#/definitions/Contrator'
+         
+  Error:
+    type: Object
+    properties:
+      code:
+        type: integer
+      message:
+        type: String  
+        
+      
+  
