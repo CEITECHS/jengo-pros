@@ -3,39 +3,35 @@
 swagger: '2.0'
 info:
   title: Pros API
-  description:  Pros API - is an API to track Contractor work done by proffessionals or experts 
-                in different domain. A contactor can be a person or a company.
+  description:  Pros API - is an API to track Contractor work done by proffessionals       or experts in different domain. A contactor can be a person or a company.
   version: "0.0.1"
 # Host Url
 host: api.pros.com
 produces: 
-  -application/json
-  -xml
+  - application/json
 paths:
   /pros:
     get:
-      desciption: |
+      summary: pros list
+      description: |
         The pros endpoint returns information about contractors who are offering 
-        different services. The responce includes contractor information like names and contact details.
-        Also all services contractor has offered to different clients and his/her proffessional education.
+        different services. The responce includes contractor information like names and contact details.Also all services contractor has offered to different clients and his/her proffessional education.
       parameters:
         - name: offset
           in: query
           description: Offset the list of returned results by this amount. Default is zero.
-          required: false
           type: integer
-          format: int
+          format: int32
         - name: limit
           in: query
           description: Number of items to retrieve. Default is 10. Maximum is 100.
-          required: false
           type: integer
-          format: int
-      responces: 
+          format: int32
+      responses: 
         200: 
-          description: A array of contractors with their information.
+          description: An array of contractors with their information.
           schema: 
-            $ref: '#definitions/Contractor'
+            $ref: '#/definitions/Contractors'
         default:
           description: Unexpected Error
           schema:
@@ -46,98 +42,98 @@ paths:
         The pros endpoint returns information for a specific contractor.
       parameters:
         - name: contractorId
-          in: query
+          in: path
           description: Unique contractor identifier which its result will be returned.
           required: true
           type: integer
-      responces:
+      responses:
         200:
           description: Contractor's information.
           schema:
-            $ref: '#definitions/Contractor'
+            $ref: '#/definitions/Contractor'
         default:
           description: Unexpected Error
           schema:
             $ref: '#/definitions/Error'
-  /pros:
-    post:
-      description: |
-        The pros POST endpoint is used to create new contractor profile.
-      parameters:
-        - 
+
 definitions:
-  Contractor:
-    type: Object
+   Contractor:
+    type: object
     properties:
       contractorId:
-        type: Integer
+        type: integer
         description: Unique identifier representing a specific contractor.
       emailAddress:
-        type: String
+        type: string
         description: Email address of a contractor.
-      address:
-        type: Object
-        items:
-          $ref: '#/definitions/Address'
-  Person:
-    allOf:
-      $ref: '#definitions/Contractor'
-      properties:
-        firstName:
-          type: String
-          description: First name of a contractor.
-        middleName:
-          type: String
-          description: Middle name of a contractor.
-        lastName:
-          type: String
-          description: Last name of a contractor.
-        phones:
-          type: array
-          items:
-            $ref: '#definitions/Phone'
-        profile:
-          type: Object
-          item:
-            $ref: '#definitions/Profile'
-        prosEducations:
-          type: array
-          items:
-            $ref: '#definitions/ProsEducation'
-        prosAttachments:
-          type: array
-          items:
-            $ref: '#definitions/ProsAttachment'
-  Address:
-    type: Object
-    properties:
+      contractorName:
+        type: string
+        description: Full name of a contractor.
       addressId:
         type: integer
         description: Unique identifier representing a specific address to a contractor.
       street:
-        type: String
+        type: string
         description: Street name of an address.
       district:
-        type: String
+        type: string
         description: District name of an address.
       region:
-        type: String
+        type: string
         description: Region name of an address.
       country:
-        type: String
-        descritpion: Country name of an address.
-      contractor:
+        type: string
+        description: Country name of an address.
+      username:
+        type: string
+        description: Username of a contractor.
+      picture:
+        type: object
+        description: Picture of a contractor.
+      photoId:
+        type: object
+        description: Photo id of a contractor.
+      introText:
+        type: string
+        description: Summary intro text to describe the contractor.
+      phoneNumber:
+        type: string
+        description: Phone number of a contractor.
+      attacchment:
+        type: object
+        description: Contractor's attachments.
+      projects:
+        type: object
+        description: Projects done by contractor.
+      serviceOfferings:
+        type: object
+        description: Different services offered by contractor.
+   Contractors:
+    type: object
+    properties:
+      offset:
+        type: integer
+        format: int32
+        description: Position in pagination.
+      limit:
+        type: integer
+        format: int32
+        description: Number of items to retrieve (100 max).
+      count:
+        type: integer
+        format: int32
+        description: Total number of items available.
+      contractorList:
         type: array
         items:
-          $ref: '#/definitions/Contrator'
-         
-  Error:
-    type: Object
+          $ref: '#/definitions/Contractor'
+   Error:
+    type: object
     properties:
       code:
         type: integer
+        format: int32
       message:
-        type: String  
-        
-      
-  
+        type: string  
+      fields:
+        type: string
