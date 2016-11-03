@@ -17,21 +17,45 @@ paths:
         The pros endpoint returns information about contractors who are offering 
         different services. The responce includes contractor information like names and contact details.Also all services contractor has offered to different clients and his/her proffessional education.
       parameters:
-        - name: offset
+        - name: pageNumber
           in: query
-          description: Offset the list of returned results by this amount. Default is zero.
+          description: A page number of the returned value. Default is one.
           type: integer
           format: int32
-        - name: limit
+          required: false
+        - name: pageSize
           in: query
-          description: Number of items to retrieve. Default is 10. Maximum is 100.
+          description: Number of items to retrieve in a page. Default is 10. Maximum is 100.
           type: integer
           format: int32
+          required: false
       responses: 
         200: 
           description: An array of contractors with their information.
-          schema: 
-            $ref: '#/definitions/Contractors'
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Contractor'
+        default:
+          description: Unexpected Error
+          schema:
+            $ref: '#/definitions/Error'
+    post:
+      description: Create new contractor for sign up.
+      produces:
+        - application/json
+      parameters:
+        - name: contractor
+          in: body
+          description: Full name of contractor.
+          required: true
+          schema:
+            $ref: '#/definitions/newPros'
+      responses:
+        200:
+          description: Successful created.
+          schema:
+            $ref: '#/definitions/newPros'
         default:
           description: Unexpected Error
           schema:
@@ -55,7 +79,6 @@ paths:
           description: Unexpected Error
           schema:
             $ref: '#/definitions/Error'
-
 definitions:
    Contractor:
     type: object
@@ -108,25 +131,22 @@ definitions:
       serviceOfferings:
         type: object
         description: Different services offered by contractor.
-   Contractors:
+   newPros:
     type: object
+    required:
+      - name
+      - email
+      - username
+      - password
     properties:
-      offset:
-        type: integer
-        format: int32
-        description: Position in pagination.
-      limit:
-        type: integer
-        format: int32
-        description: Number of items to retrieve (100 max).
-      count:
-        type: integer
-        format: int32
-        description: Total number of items available.
-      contractorList:
-        type: array
-        items:
-          $ref: '#/definitions/Contractor'
+      name:
+        type: string
+      email:
+        type: string
+      username:
+        type: string
+      password:
+        type: string
    Error:
     type: object
     properties:
