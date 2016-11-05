@@ -47,7 +47,7 @@ paths:
       parameters:
         - name: contractor
           in: body
-          description: Full name of contractor.
+          description: Some useful contractor information for sign-up.
           required: true
           schema:
             $ref: '#/definitions/newPros'
@@ -75,6 +75,100 @@ paths:
           description: Contractor's information.
           schema:
             $ref: '#/definitions/Contractor'
+        default:
+          description: Unexpected Error
+          schema:
+            $ref: '#/definitions/Error'
+    put:
+      summary: Update pros information.
+      description: The endpoint to update contractor information.
+      produces:
+        - application/json
+        - application/xml
+      parameters:
+        - name: contractorId
+          in: path
+          description: Unique contractor identifier which its information will be updated.
+          required: true
+          type: integer
+        - name: body
+          in: body
+          description: Updated contractor object.
+          required: true
+          schema:
+            $ref: '#/definitions/Contractor'
+      responses:
+        200:
+          description: Successful operation
+          schema:
+            $ref: '#/definitions/Contractor'
+        default:
+          description: Unexpected Error
+          schema:
+            $ref: '#/definitions/Error'
+    delete:
+      summary: Delete pros information.
+      description: The endpoint to delete contractor information.
+      produces:
+        - application/json
+        - application/xml
+      parameters:
+        - name: contractorId
+          in: path
+          description: Unique contractor identifier which its information will be deleted.
+          required: true
+          type: integer
+      responses:
+        200:
+          description: Successful operation
+        default:
+          description: Unexpected Error
+          schema:
+            $ref: '#/definitions/Error'
+  /pros/{contractorId}/attachments:
+    get:
+      summary: Retrieve Contractor's attachments.
+      description: The endpoint is used to retrieve all personal attachments associated with this contractor ID. Not proffessional education attachments.
+      produces:
+        - application/json
+        - application/xml
+      parameters:
+      - name: contractorId
+        in: path
+        description: Unique Contractor Identifier which owns all retrieved attachments.
+        required: true
+        type: integer
+      responses:
+        200:
+          description: Contractor's attachments.
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Attachments'
+        default:
+          description: Unexpected Error
+          schema:
+            $ref: '#/definitions/Error'
+  /pros/{contractorId}/projects:
+    get:
+      summary: Retrieve Contractor's projects.
+      description: The endpoint is used to retrieve all projects on contractor's profile associated with the given contractor ID.
+      produces:
+        - application/json
+        - application/xml
+      parameters:
+      - name: contractorId
+        in: path
+        description: Unique Contractor Identifier which owns all retrieved projects.
+        required: true
+        type: integer
+      responses:
+        200:
+          description: Contractor's projects.
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Projects'
         default:
           description: Unexpected Error
           schema:
@@ -147,6 +241,39 @@ definitions:
         type: string
       password:
         type: string
+   Attachments:
+    type: object
+    required:
+      - name
+      - url
+    properties:
+      name:
+        type: string
+      description:
+        type: string
+      url:
+        type: string
+   Projects:
+    type: object
+    required:
+      - projectName
+      - client
+      - serviceOffering
+    properties:
+      projectName:
+        type: string
+      client:
+        type: object
+      serviceOffering:
+        type: array
+        items:
+          $ref: '#/definitions/ServiceOffering'
+   ServiceOffering:
+    type: object
+    properties:
+      serviceId:
+        type: integer
+        description: Unique identifier for the service
    Error:
     type: object
     properties:
