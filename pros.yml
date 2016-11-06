@@ -244,15 +244,23 @@ definitions:
    Attachments:
     type: object
     required:
+      - id
       - name
-      - url
+      - byteArray
+      - extension
     properties:
+      id:
+        type: integer
+        description: Attachment ID.
       name:
         type: string
-      description:
+        description: Attachment file name
+      byteArray:
+        type: object
+        description: Array stream of the attachment contect.
+      extension:
         type: string
-      url:
-        type: string
+        description: File extension of an attachment. eg. pdf, txt, doc, exls.
    Projects:
     type: object
     required:
