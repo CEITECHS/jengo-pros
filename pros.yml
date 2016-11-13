@@ -10,6 +10,52 @@ host: api.pros.com
 produces: 
   - application/json
 paths:
+  /pros/signUP:
+   post:
+      description: Create new contractor for sign up.
+      produces:
+        - application/json
+      parameters:
+        - name: contractor
+          in: body
+          description: Some useful contractor information for sign-up.
+          required: true
+          schema:
+            $ref: '#/definitions/newPros'
+      responses:
+        200:
+          description: Successful created.
+          schema:
+            $ref: '#/definitions/newPros'
+        default:
+          description: Unexpected Error
+          schema:
+            $ref: '#/definitions/Error'
+  /pros/activate/{activationCode}:
+    put:
+      summary: Activation endpoint.
+      parameters:
+        - name: activationCode
+          in: path
+          description: Activation code to verify
+          required: true
+          type: string
+      responses:
+        200:
+          description: sucessful operation.
+  /pros/login:
+    get:
+      summary: Login endpoint
+      parameters:
+        - name: email
+          type: string
+          in: query
+        - name: password
+          type: string
+          in: query
+      responses:
+        200:
+          description: succesful operation
   /pros:
     get:
       summary: pros list
@@ -40,27 +86,7 @@ paths:
           description: Unexpected Error
           schema:
             $ref: '#/definitions/Error'
-    post:
-      description: Create new contractor for sign up.
-      produces:
-        - application/json
-      parameters:
-        - name: contractor
-          in: body
-          description: Some useful contractor information for sign-up.
-          required: true
-          schema:
-            $ref: '#/definitions/newPros'
-      responses:
-        200:
-          description: Successful created.
-          schema:
-            $ref: '#/definitions/newPros'
-        default:
-          description: Unexpected Error
-          schema:
-            $ref: '#/definitions/Error'
-  /pros/{contractorId}:
+  /pros/{contractorId}/profile:
     get:
       description: |
         The pros endpoint returns information for a specific contractor.
@@ -125,6 +151,28 @@ paths:
           description: Unexpected Error
           schema:
             $ref: '#/definitions/Error'
+  /pros/{contractorId}/profile/changePassword:
+    put:
+      parameters:
+        - name: contractorId
+          in: path
+          description: Unique Contractor Identifier for the contractor profile.
+          required: true
+          type: integer
+        - name: body
+          in: body
+          description: Updated object to update.
+          required: true
+          schema:
+            $ref: '#/definitions/ChangePasswordObject'
+      responses:
+        200:
+          description: Successful operation
+        default:
+          description: Unexpected Error
+          schema:
+            $ref: '#/definitions/Error'
+        
   /pros/{contractorId}/attachments:
     get:
       summary: Retrieve Contractor's attachments.
@@ -173,6 +221,30 @@ paths:
           description: Unexpected Error
           schema:
             $ref: '#/definitions/Error'
+  /pros/{contractorId}/services:
+    get:
+      summary: Retrieve Contractor's services offered.
+      description: The endpoint is used to retrieve all services on contractor's profile associated with the given contractor ID.
+      produces:
+        - application/json
+        - application/xml
+      parameters:
+      - name: contractorId
+        in: path
+        description: Unique Contractor Identifier which owns all retrieved services.
+        required: true
+        type: integer
+      responses:
+        200:
+          description: Contractor's services.
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/ServiceOffering'
+        default:
+          description: Unexpected Error
+          schema:
+            $ref: '#/definitions/Error'
 definitions:
    Contractor:
     type: object
@@ -180,30 +252,14 @@ definitions:
       contractorId:
         type: integer
         description: Unique identifier representing a specific contractor.
-      emailAddress:
+      email:
         type: string
         description: Email address of a contractor.
       contractorName:
         type: string
         description: Full name of a contractor.
-      addressId:
-        type: integer
-        description: Unique identifier representing a specific address to a contractor.
-      street:
-        type: string
-        description: Street name of an address.
-      district:
-        type: string
-        description: District name of an address.
-      region:
-        type: string
-        description: Region name of an address.
-      country:
-        type: string
-        description: Country name of an address.
-      username:
-        type: string
-        description: Username of a contractor.
+      address:
+        $ref: '#/definitions/Address'
       picture:
         type: object
         description: Picture of a contractor.
@@ -228,19 +284,32 @@ definitions:
    newPros:
     type: object
     required:
-      - name
+      - firstName
+      - lastName
       - email
-      - username
       - password
+      - phone
+      - introText
+      - address
     properties:
-      name:
+      firstName:
+        type: string
+      middleName:
+        type: string
+      lastName:
         type: string
       email:
         type: string
-      username:
-        type: string
+        description: contractor's email ID. Will be used as username too.
       password:
         type: string
+      introText:
+        type: string
+        description: Introduction summary of what a pros do.
+      phone:
+        $ref: '#/definitions/Phone'
+      address:
+        $ref: '#/definitions/Address'
    Attachments:
     type: object
     required:
@@ -279,9 +348,59 @@ definitions:
    ServiceOffering:
     type: object
     properties:
-      serviceId:
-        type: integer
-        description: Unique identifier for the service
+      serviceName:
+        type: string
+        description: Name of the service offered.
+      phaseName:
+        type: string
+        description: Name of the phase to which the service is offered.
+   Phone:
+    type: object
+    properties:
+      phoneNumber:
+        type: string
+        description: Phone number of the the contractor.
+      isPrimary:
+        type: boolean
+        description: Most prefered to be contacted with.
+      contactMethod:
+        type: string
+        description: method you want to be contacted using this phone number. Either by text or call.
+   Address:
+    type: object
+    properties:
+      longtude:
+        type: number
+        format: double
+        description: Longtude of an address (location)
+      latitude:
+        type: number
+        format: double
+        description: Latitude of an address (location)
+      street:
+        type: string
+        description: Street name of an address.
+      district:
+        type: string
+        description: District name of an address.
+      region:
+        type: string
+        description: Region name of an address.
+      country:
+        type: string
+        description: Country name of an address.
+   ChangePasswordObject:
+    type: object
+    properties:
+      contractorId:
+        type: string
+      email:
+       type: string
+      oldPassword:
+        type: string
+      newPassword:
+        type: string
+        
    Error:
     type: object
     properties:
