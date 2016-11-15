@@ -10,7 +10,7 @@ host: api.pros.com
 produces: 
   - application/json
 paths:
-  /pros/signUP:
+  /pros/signup:
    post:
       description: Create new contractor for sign up.
       produces:
@@ -18,17 +18,17 @@ paths:
       parameters:
         - name: contractor
           in: body
-          description: Some useful contractor information for sign-up.
+          description: Pro's basic information for registration.
           required: true
           schema:
-            $ref: '#/definitions/newPros'
+            $ref: '#/definitions/Pro'
       responses:
         200:
           description: Successful created.
           schema:
-            $ref: '#/definitions/newPros'
+            $ref: '#/definitions/Pro'
         default:
-          description: Unexpected Error
+          description: An error with a status code between 4XX and 5XX
           schema:
             $ref: '#/definitions/Error'
   /pros/activate/{activationCode}:
@@ -43,6 +43,10 @@ paths:
       responses:
         200:
           description: sucessful operation.
+        default:
+          description: An error with a status code between 4XX and 5XX
+          schema:
+            $ref: '#/definitions/Error'
   /pros/login:
     get:
       summary: Login endpoint
@@ -56,20 +60,24 @@ paths:
       responses:
         200:
           description: succesful operation
+        default:
+          description: An error with a status code between 4XX and 5XX
+          schema:
+            $ref: '#/definitions/Error'
   /pros:
-    get:
+     get:
       summary: pros list
       description: |
-        The pros endpoint returns information about contractors who are offering 
-        different services. The responce includes contractor information like names and contact details.Also all services contractor has offered to different clients and his/her proffessional education.
+        This pros endpoint returns information summay about pro who are offering 
+        various services. The response includes pro basic information and services they offer.
       parameters:
-        - name: pageNumber
+        - name: page
           in: query
           description: A page number of the returned value. Default is one.
           type: integer
           format: int32
           required: false
-        - name: pageSize
+        - name: size
           in: query
           description: Number of items to retrieve in a page. Default is 10. Maximum is 100.
           type: integer
@@ -77,86 +85,86 @@ paths:
           required: false
       responses: 
         200: 
-          description: An array of contractors with their information.
+          description: An array of pro with basic information and services they've to offer.
           schema:
             type: array
             items:
-              $ref: '#/definitions/Contractor'
+              $ref: '#/definitions/Pro'
         default:
-          description: Unexpected Error
+          description: An error with a status code between 4XX and 5XX
           schema:
             $ref: '#/definitions/Error'
-  /pros/{contractorId}/profile:
+  /pros/{proReferenceId}/profile:
     get:
       description: |
-        The pros endpoint returns information for a specific contractor.
+        The pros endpoint returns information for a specific pro.
       parameters:
-        - name: contractorId
+        - name: proReferenceId
           in: path
-          description: Unique contractor identifier which its result will be returned.
+          description: Unique pro identifier which its result will be returned.
           required: true
           type: integer
       responses:
         200:
-          description: Contractor's information.
+          description: pro's information.
           schema:
-            $ref: '#/definitions/Contractor'
+            $ref: '#/definitions/ProDetails'
         default:
-          description: Unexpected Error
+          description: An error with a status code between 4XX and 5XX
           schema:
             $ref: '#/definitions/Error'
     put:
-      summary: Update pros information.
-      description: The endpoint to update contractor information.
+      summary: Update pro information.
+      description: The endpoint to update pro information.
       produces:
         - application/json
         - application/xml
       parameters:
-        - name: contractorId
+        - name: proReferenceId
           in: path
-          description: Unique contractor identifier which its information will be updated.
+          description: Unique pro identifier which its information will be updated.
           required: true
           type: integer
         - name: body
           in: body
-          description: Updated contractor object.
+          description: Updated pro object.
           required: true
           schema:
-            $ref: '#/definitions/Contractor'
+            $ref: '#/definitions/ProDetails'
       responses:
         200:
           description: Successful operation
           schema:
-            $ref: '#/definitions/Contractor'
+            $ref: '#/definitions/ProDetails'
         default:
-          description: Unexpected Error
+          description: An error with a status code between 4XX and 5XX
           schema:
             $ref: '#/definitions/Error'
     delete:
-      summary: Delete pros information.
-      description: The endpoint to delete contractor information.
+      summary: Delete pro information.
+      description: The endpoint to delete pro information.
       produces:
         - application/json
         - application/xml
       parameters:
-        - name: contractorId
+        - name: proReferenceId
           in: path
-          description: Unique contractor identifier which its information will be deleted.
+          description: Unique pro identifier which its information will be deleted.
           required: true
           type: integer
       responses:
         200:
           description: Successful operation
         default:
-          description: Unexpected Error
+          description: An error with a status code between 4XX and 5XX
           schema:
             $ref: '#/definitions/Error'
-  /pros/{contractorId}/profile/changePassword:
+  /pros/{proReferenceId}/profile/changePassword:
     put:
       parameters:
-        - name: contractorId
+        - name: proReferenceId
           in: path
-          description: Unique Contractor Identifier for the contractor profile.
+          description: Unique Pro Identifier for the pro profile.
           required: true
           type: integer
         - name: body
@@ -173,144 +181,144 @@ paths:
           schema:
             $ref: '#/definitions/Error'
         
-  /pros/{contractorId}/attachments:
+  /pros/{proReferenceId}/attachments:
     get:
-      summary: Retrieve Contractor's attachments.
-      description: The endpoint is used to retrieve all personal attachments associated with this contractor ID. Not proffessional education attachments.
+      summary: Retrieve pro's attachments.
+      description: The endpoint is used to retrieve all personal attachments associated with this pro ID. Not proffessional education attachments.
       produces:
         - application/json
         - application/xml
       parameters:
-      - name: contractorId
+      - name: proReferenceId
         in: path
-        description: Unique Contractor Identifier which owns all retrieved attachments.
+        description: Unique Pro Identifier which owns all retrieved attachments.
         required: true
         type: integer
       responses:
         200:
-          description: Contractor's attachments.
+          description: Pro's attachments.
           schema:
             type: array
             items:
-              $ref: '#/definitions/Attachments'
+              $ref: '#/definitions/Attachment'
         default:
-          description: Unexpected Error
+          description: An error with a status code between 4XX and 5XX
           schema:
             $ref: '#/definitions/Error'
-  /pros/{contractorId}/projects:
+  /pros/{proReferenceId}/projects:
     get:
-      summary: Retrieve Contractor's projects.
-      description: The endpoint is used to retrieve all projects on contractor's profile associated with the given contractor ID.
+      summary: Retrieve Pro's projects.
+      description: The endpoint is used to retrieve all projects on pro's profile associated with the given pro ID.
       produces:
         - application/json
         - application/xml
       parameters:
-      - name: contractorId
+      - name: proReferenceId
         in: path
-        description: Unique Contractor Identifier which owns all retrieved projects.
+        description: Unique Pro Identifier which owns all retrieved projects.
         required: true
         type: integer
       responses:
         200:
-          description: Contractor's projects.
+          description: pro's completed projects.
           schema:
             type: array
             items:
-              $ref: '#/definitions/Projects'
+              $ref: '#/definitions/Project'
         default:
-          description: Unexpected Error
+          description: An error with a status code between 4XX and 5XX
           schema:
             $ref: '#/definitions/Error'
-  /pros/{contractorId}/services:
+  /pros/{proReferenceId}/services:
     get:
-      summary: Retrieve Contractor's services offered.
-      description: The endpoint is used to retrieve all services on contractor's profile associated with the given contractor ID.
+      summary: Retrieve Pro's services offered.
+      description: The endpoint is used to retrieve all services on pro's profile associated with the given pro ID.
       produces:
         - application/json
         - application/xml
       parameters:
-      - name: contractorId
+      - name: proReferenceId
         in: path
-        description: Unique Contractor Identifier which owns all retrieved services.
+        description: Unique pro Identifier which owns all retrieved services.
         required: true
         type: integer
       responses:
         200:
-          description: Contractor's services.
+          description: Pro's services.
           schema:
             type: array
             items:
               $ref: '#/definitions/ServiceOffering'
         default:
-          description: Unexpected Error
+          description: An error with a status code between 4XX and 5XX
           schema:
             $ref: '#/definitions/Error'
 definitions:
-   Contractor:
+   ProDetails:
     type: object
     properties:
-      contractorId:
-        type: integer
-        description: Unique identifier representing a specific contractor.
-      email:
-        type: string
-        description: Email address of a contractor.
-      contractorName:
-        type: string
-        description: Full name of a contractor.
-      address:
-        $ref: '#/definitions/Address'
-      picture:
-        type: object
-        description: Picture of a contractor.
-      photoId:
-        type: object
-        description: Photo id of a contractor.
-      introText:
-        type: string
-        description: Summary intro text to describe the contractor.
-      phoneNumber:
-        type: string
-        description: Phone number of a contractor.
-      attacchment:
-        type: object
-        description: Contractor's attachments.
+      basicInfo:
+       $ref: '#/definitions/Pro'
+      profilePicture:
+       $ref: '#/definitions/Attachment'
+      photoID:
+        $ref: '#/definitions/Attachment'
       projects:
-        type: object
-        description: Projects done by contractor.
-      serviceOfferings:
-        type: object
-        description: Different services offered by contractor.
-   newPros:
+        description: a list a projects a pro has participated in and completed
+        type: array
+        items:
+          $ref: '#/definitions/Project'
+   Pro:
     type: object
     required:
       - firstName
       - lastName
-      - email
-      - password
-      - phone
       - introText
-      - address
+      - emailAddress
+      - phone
+      - password
+      - operatingAs
     properties:
+      proReferenceId:
+       type: string
+      operatingAs:
+       type: string
+       description: operating model of the pro , allowed values is [Company or Individual] Ex. Individual
+       default: Individual
+      company:
+       type: object
+       description: company details for non-individual pros
+       properties: 
+        businessName:
+         type: string
+        phone:
+         $ref: '#/definitions/Phone'
+        emailAddress:
+         type: string
+        address:
+         $ref: '#/definitions/Address'
       firstName:
         type: string
-      middleName:
-        type: string
       lastName:
+       type: string
+      middleName:
+       type: string
+      introText:
+       type: string
+      phone:
+       $ref: '#/definitions/Phone'
+      address :
+       $ref: '#/definitions/Address'
+      emailAddress:
         type: string
-      email:
-        type: string
-        description: contractor's email ID. Will be used as username too.
       password:
         type: string
-      introText:
-        type: string
-        description: Introduction summary of what a pros do.
-      phone:
-        $ref: '#/definitions/Phone'
-      address:
-        $ref: '#/definitions/Address'
-   Attachments:
+      serviceOfferings:
+        description: a list of services offered by a pro
+        type: array
+        items:
+         $ref: '#/definitions/ServiceOffering'
+   Attachment:
     type: object
     required:
       - id
@@ -326,40 +334,61 @@ definitions:
         description: Attachment file name
       byteArray:
         type: object
-        description: Array stream of the attachment contect.
+        description: Array stream of the attachment content.
       extension:
         type: string
         description: File extension of an attachment. eg. pdf, txt, doc, exls.
-   Projects:
+   Project:
     type: object
     required:
       - projectName
       - client
-      - serviceOffering
+      - offeredServices
+      - startDate
     properties:
       projectName:
         type: string
+      startDate:
+       type: string
+       description: the first date to a contractor started on this project Ex. 2016-05-30
+       format: yyyy-MM-dd
+      endDate:
+       type: string
+       description: latest/last date to a contractor worked on this project Ex. 2016-07-30
+       format: yyyy-MM-dd
       client:
         type: object
-      serviceOffering:
+        properties:
+         fistName:
+          type: string
+          description: client or project supervisor firstName
+         lastName:
+          type: string
+          description: client or project supervisor lastName
+         phoneNumber:
+          type: string
+         emailAddress:
+          type: string
+      offeredServices:
+        description: services offered by this pro on this particular project
         type: array
         items:
           $ref: '#/definitions/ServiceOffering'
    ServiceOffering:
     type: object
     properties:
-      serviceName:
+      serviceId:
         type: string
-        description: Name of the service offered.
-      phaseName:
+        description: Unique identifier for the service
+      serviceDescription:
         type: string
-        description: Name of the phase to which the service is offered.
+        description : description of the offered service 
    Phone:
     type: object
     properties:
       phoneNumber:
         type: string
-        description: Phone number of the the contractor.
+        description: Phone number of the pro.
       isPrimary:
         type: boolean
         description: Most prefered to be contacted with.
@@ -392,7 +421,7 @@ definitions:
    ChangePasswordObject:
     type: object
     properties:
-      contractorId:
+      proReferenceId:
         type: string
       email:
        type: string
@@ -400,14 +429,23 @@ definitions:
         type: string
       newPassword:
         type: string
-        
    Error:
     type: object
     properties:
-      code:
-        type: integer
-        format: int32
-      message:
-        type: string  
-      fields:
-        type: string
+     title:
+       type: string
+     status:
+       type: integer
+       format: int32
+     detail:
+       type: string
+     timeStamp:
+      type: number
+     developerMessage:
+      type: string
+     errors:
+      type: array
+      description: an Array of errors messages occured
+      items:
+          type: string
+          description: a specific error message
