@@ -9,30 +9,12 @@ info:
 host: api.pros.com
 produces: 
   - application/json
+  - application/xml
 paths:
-  /pros/signup:
-   post:
-      description: Create new contractor for sign up.
-      produces:
-        - application/json
-      parameters:
-        - name: contractor
-          in: body
-          description: Pro's basic information for registration.
-          required: true
-          schema:
-            $ref: '#/definitions/Pro'
-      responses:
-        200:
-          description: Successful created.
-          schema:
-            $ref: '#/definitions/Pro'
-        default:
-          description: An error with a status code between 4XX and 5XX
-          schema:
-            $ref: '#/definitions/Error'
   /pros/activate/{activationCode}:
     put:
+      tags: 
+        - Registration
       summary: Activation endpoint.
       parameters:
         - name: activationCode
@@ -43,12 +25,17 @@ paths:
       responses:
         200:
           description: sucessful operation.
+          schema:
+            $ref: '#/definitions/MessageResource'
         default:
           description: An error with a status code between 4XX and 5XX
           schema:
             $ref: '#/definitions/Error'
   /pros/login:
-    get:
+    post:
+      tags:
+        - Registration
+        - Login
       summary: Login endpoint
       parameters:
         - name: email
@@ -60,13 +47,40 @@ paths:
       responses:
         200:
           description: succesful operation
+          schema:
+            $ref: '#/definitions/MessageResource'
         default:
           description: An error with a status code between 4XX and 5XX
           schema:
             $ref: '#/definitions/Error'
   /pros:
+     post:
+      tags:
+        - Registration
+      description: Create new pros for sign up.
+      produces:
+        - application/json
+        - application/xml
+      parameters:
+        - name: pro
+          in: body
+          description: Pro's basic information for sign-up.
+          required: true
+          schema:
+            $ref: '#/definitions/Pro'
+      responses:
+        200:
+          description: Successful created.
+          schema:
+            $ref: '#/definitions/MessageResource'
+        default:
+          description: An error with a status code between 4XX and 5XX
+          schema:
+            $ref: '#/definitions/Error'
      get:
-      summary: pros list
+      tags:
+        - Registration
+      summary: pro list
       description: |
         This pros endpoint returns information summay about pro who are offering 
         various services. The response includes pro basic information and services they offer.
@@ -94,8 +108,10 @@ paths:
           description: An error with a status code between 4XX and 5XX
           schema:
             $ref: '#/definitions/Error'
-  /pros/{proReferenceId}/profile:
+  /pros/{proReferenceId}:
     get:
+      tags:
+        - Registration
       description: |
         The pros endpoint returns information for a specific pro.
       parameters:
@@ -114,6 +130,8 @@ paths:
           schema:
             $ref: '#/definitions/Error'
     put:
+      tags:
+        - Registration
       summary: Update pro information.
       description: The endpoint to update pro information.
       produces:
@@ -135,12 +153,14 @@ paths:
         200:
           description: Successful operation
           schema:
-            $ref: '#/definitions/ProDetails'
+            $ref: '#/definitions/MessageResource'
         default:
           description: An error with a status code between 4XX and 5XX
           schema:
             $ref: '#/definitions/Error'
     delete:
+      tags:
+        - Registration
       summary: Delete pro information.
       description: The endpoint to delete pro information.
       produces:
@@ -155,12 +175,17 @@ paths:
       responses:
         200:
           description: Successful operation
+          schema:
+            $ref: '#/definitions/MessageResource'
         default:
           description: An error with a status code between 4XX and 5XX
           schema:
             $ref: '#/definitions/Error'
-  /pros/{proReferenceId}/profile/changePassword:
+  /pros/{proReferenceId}/profile/change-password:
     put:
+      tags:
+        - Profile
+        - Login
       parameters:
         - name: proReferenceId
           in: path
@@ -172,7 +197,7 @@ paths:
           description: Updated object to update.
           required: true
           schema:
-            $ref: '#/definitions/ChangePasswordObject'
+            $ref: '#/definitions/ChangePasswordResource'
       responses:
         200:
           description: Successful operation
@@ -180,33 +205,12 @@ paths:
           description: Unexpected Error
           schema:
             $ref: '#/definitions/Error'
-        
-  /pros/{proReferenceId}/attachments:
-    get:
-      summary: Retrieve pro's attachments.
-      description: The endpoint is used to retrieve all personal attachments associated with this pro ID. Not proffessional education attachments.
-      produces:
-        - application/json
-        - application/xml
-      parameters:
-      - name: proReferenceId
-        in: path
-        description: Unique Pro Identifier which owns all retrieved attachments.
-        required: true
-        type: integer
-      responses:
-        200:
-          description: Pro's attachments.
-          schema:
-            type: array
-            items:
-              $ref: '#/definitions/Attachment'
-        default:
-          description: An error with a status code between 4XX and 5XX
-          schema:
-            $ref: '#/definitions/Error'
+            
   /pros/{proReferenceId}/projects:
     get:
+      tags:
+        - Profile
+        - Registration
       summary: Retrieve Pro's projects.
       description: The endpoint is used to retrieve all projects on pro's profile associated with the given pro ID.
       produces:
@@ -225,6 +229,138 @@ paths:
             type: array
             items:
               $ref: '#/definitions/Project'
+        default:
+          description: An error with a status code between 4XX and 5XX
+          schema:
+            $ref: '#/definitions/Error'
+    post:
+      tags:
+        - Profile
+        - Registration
+      summary: Add new project in a profile.
+      description: The endpoint to Add a project in pro's profile.
+      parameters:
+        - name: proReferenceId
+          in: path
+          description: Unique Pro Identifier for the pro profile.
+          required: true
+          type: integer
+        - name: body
+          in: body
+          description: Updated object to update.
+          required: true
+          schema:
+            $ref: '#/definitions/Project'
+      responses:
+        200:
+          description: Successful operation
+        default:
+          description: Unexpected Error
+          schema:
+            $ref: '#/definitions/Error'
+    delete:
+      tags:
+        - Registration
+        - Profile
+      summary: Delete All projects in a profile.
+      description: The endpoint to delete All projects in pro's profile.
+      produces:
+        - application/json
+        - application/xml
+      parameters:
+        - name: proReferenceId
+          in: path
+          description: Unique pro identifier which its projects will be deleted.
+          required: true
+          type: integer
+      responses:
+        200:
+          description: Successful operation
+          schema:
+            $ref: '#/definitions/MessageResource'
+        default:
+          description: An error with a status code between 4XX and 5XX
+          schema:
+            $ref: '#/definitions/Error'
+  /pros/{proReferenceId}/projects/{projectReferenceId}:
+    get:
+      summary: Retrieve Pro's specific project.
+      description: The endpoint is used to retrieve unique project on pro's profile associated with the given projectReference ID.
+      produces:
+        - application/json
+        - application/xml
+      parameters:
+      - name: proReferenceId
+        in: path
+        description: Unique Pro Identifier which owns retrieved project.
+        required: true
+        type: integer
+      - name: projectReferenceId
+        in: path
+        description: Unique Project Identifier which will be retrieved.
+        required: true
+        type: integer
+      responses:
+        200:
+          description: pro's specific project retrieved.
+          schema:
+            $ref: '#/definitions/Project'
+        default:
+          description: An error with a status code between 4XX and 5XX
+          schema:
+            $ref: '#/definitions/Error'
+    put:
+      tags:
+        - Profile
+        - Registration
+      parameters:
+        - name: proReferenceId
+          in: path
+          description: Unique Pro Identifier for the pro profile.
+          required: true
+          type: integer
+        - name: projectReferenceId
+          in: path
+          description: Unique Project Identifier which will be retrieved.
+          required: true
+          type: integer
+        - name: body
+          in: body
+          description: New object to add.
+          required: true
+          schema:
+            $ref: '#/definitions/Project'
+      responses:
+        200:
+          description: Successful operation
+        default:
+          description: Unexpected Error
+          schema:
+            $ref: '#/definitions/Error'
+    delete:
+      tags:
+        - Registration
+      summary: Delete pro information.
+      description: The endpoint to delete pro project information.
+      produces:
+        - application/json
+        - application/xml
+      parameters:
+        - name: proReferenceId
+          in: path
+          description: Unique pro identifier which one of its project will be deleted.
+          required: true
+          type: integer
+        - name: projectReferenceId
+          in: path
+          description: Unique Project Identifier which will be deleted.
+          required: true
+          type: integer
+      responses:
+        200:
+          description: Successful operation
+          schema:
+            $ref: '#/definitions/MessageResource'
         default:
           description: An error with a status code between 4XX and 5XX
           schema:
@@ -249,6 +385,143 @@ paths:
             type: array
             items:
               $ref: '#/definitions/ServiceOffering'
+        default:
+          description: An error with a status code between 4XX and 5XX
+          schema:
+            $ref: '#/definitions/Error'
+    post:
+      tags:
+        - Profile
+        - Registration
+        - Services
+      summary: Add new service in a profile.
+      description: The endpoint to Add a service in pro's profile.
+      parameters:
+        - name: proReferenceId
+          in: path
+          description: Unique Pro Identifier for the pro profile.
+          required: true
+          type: integer
+        - name: body
+          in: body
+          description: New object to add.
+          required: true
+          schema:
+            $ref: '#/definitions/ServiceOffering'
+      responses:
+        200:
+          description: Successful operation
+        default:
+          description: Unexpected Error
+          schema:
+            $ref: '#/definitions/Error'
+    delete:
+      tags:
+        - Registration
+        - Profile
+        - Services
+      summary: Delete All services in a profile.
+      description: The endpoint to delete All services in pro's profile.
+      produces:
+        - application/json
+        - application/xml
+      parameters:
+        - name: proReferenceId
+          in: path
+          description: Unique pro identifier which its services will be deleted.
+          required: true
+          type: integer
+      responses:
+        200:
+          description: Successful operation
+          schema:
+            $ref: '#/definitions/MessageResource'
+        default:
+          description: An error with a status code between 4XX and 5XX
+          schema:
+            $ref: '#/definitions/Error'
+  /pros/{proReferenceId}/services/{serviceReferenceId}:
+    get:
+      summary: Retrieve Pro's specific service.
+      description: The endpoint is used to retrieve unique service on pro's profile associated with the given serviceReference ID.
+      produces:
+        - application/json
+        - application/xml
+      parameters:
+      - name: proReferenceId
+        in: path
+        description: Unique Pro Identifier which owns retrieved services.
+        required: true
+        type: integer
+      - name: serviceReferenceId
+        in: path
+        description: Unique service Identifier which will be retrieved.
+        required: true
+        type: integer
+      responses:
+        200:
+          description: pro's specific service retrieved.
+          schema:
+            $ref: '#/definitions/ServiceOffering'
+        default:
+          description: An error with a status code between 4XX and 5XX
+          schema:
+            $ref: '#/definitions/Error'
+    put:
+      tags:
+        - Profile
+        - Registration
+        - Services
+      parameters:
+        - name: proReferenceId
+          in: path
+          description: Unique Pro Identifier for the pro profile.
+          required: true
+          type: integer
+        - name: serviceReferenceId
+          in: path
+          description: Unique service Identifier which will be retrieved.
+          required: true
+          type: integer
+        - name: body
+          in: body
+          description: New object to add.
+          required: true
+          schema:
+            $ref: '#/definitions/ServiceOffering'
+      responses:
+        200:
+          description: Successful operation
+        default:
+          description: Unexpected Error
+          schema:
+            $ref: '#/definitions/Error'
+    delete:
+      tags:
+        - Registration
+        - Profile
+        - Servives
+      summary: Delete pro information.
+      description: The endpoint to delete pro services information.
+      produces:
+        - application/json
+        - application/xml
+      parameters:
+        - name: proReferenceId
+          in: path
+          description: Unique pro identifier which one of its project will be deleted.
+          required: true
+          type: integer
+        - name: serviceReferenceId
+          in: path
+          description: Unique Project Identifier which will be deleted.
+          required: true
+          type: integer
+      responses:
+        200:
+          description: Successful operation
+          schema:
+            $ref: '#/definitions/MessageResource'
         default:
           description: An error with a status code between 4XX and 5XX
           schema:
@@ -357,23 +630,17 @@ definitions:
        description: latest/last date to a contractor worked on this project Ex. 2016-07-30
        format: yyyy-MM-dd
       client:
-        type: object
-        properties:
-         fistName:
-          type: string
-          description: client or project supervisor firstName
-         lastName:
-          type: string
-          description: client or project supervisor lastName
-         phoneNumber:
-          type: string
-         emailAddress:
-          type: string
+       $ref: '#/definitions/Client'
       offeredServices:
         description: services offered by this pro on this particular project
         type: array
         items:
           $ref: '#/definitions/ServiceOffering'
+      attachments:
+        description: a list a attachments a project has to in order to show more of his/her work.
+        type: array
+        items:
+          $ref: '#/definitions/Attachment'
    ServiceOffering:
     type: object
     properties:
@@ -383,6 +650,19 @@ definitions:
       serviceDescription:
         type: string
         description : description of the offered service 
+   Client:
+    type: object
+    properties:
+      fistName:
+        type: string
+        description: client or project supervisor firstName
+      lastName:
+        type: string
+        description: client or project supervisor lastName
+      phoneNumber:
+        type: string
+      emailAddress:
+        type: string
    Phone:
     type: object
     properties:
@@ -418,7 +698,7 @@ definitions:
       country:
         type: string
         description: Country name of an address.
-   ChangePasswordObject:
+   ChangePasswordResource:
     type: object
     properties:
       proReferenceId:
@@ -429,6 +709,16 @@ definitions:
         type: string
       newPassword:
         type: string
+   MessageResource:
+    type: object
+    properties:
+     status:
+       type: integer
+       format: int32
+     detail:
+       type: string
+     developerMessage:
+      type: string
    Error:
     type: object
     properties:
