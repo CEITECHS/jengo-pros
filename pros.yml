@@ -39,12 +39,12 @@ paths:
         - Login
       summary: Login endpoint
       parameters:
-        - name: email
-          type: string
-          in: query
-        - name: password
-          type: string
-          in: query
+        - name: login
+          in: body
+          description: Login resource with login credetials
+          required: true
+          schema:
+            $ref: '#/definitions/LoginResource'
       responses:
         200:
           description: succesful operation
@@ -548,13 +548,13 @@ paths:
           description: An error with a status code between 4XX and 5XX
           schema:
             $ref: '#/definitions/Error'
-  /pros/{proReferenceId}/pro-educations:
+  /pros/{proReferenceId}/trainings:
     get:
       tags:
         - Profile
         - Registration
         - Education
-      summary: Retrieve Pro's pro educatons he/she has acquired.
+      summary: Retrieve Pro's pro trainings he/she has acquired.
       description: The endpoint is used to retrieve all services on pro's profile associated with the given pro ID.
       produces:
         - application/json
@@ -562,16 +562,16 @@ paths:
       parameters:
       - name: proReferenceId
         in: path
-        description: Unique pro Identifier which owns all retrieved pro education.
+        description: Unique pro Identifier which owns all retrieved pro training.
         required: true
         type: integer
       responses:
         200:
-          description: Pro's education.
+          description: Pro's trainings.
           schema:
             type: array
             items:
-              $ref: '#/definitions/ProEducation'
+              $ref: '#/definitions/Training'
         default:
           description: An error with a status code between 4XX and 5XX
           schema:
@@ -581,8 +581,8 @@ paths:
         - Profile
         - Registration
         - Education
-      summary: Add new pro-education in a profile.
-      description: The endpoint to Add a education in pro's profile.
+      summary: Add new training in a profile.
+      description: The endpoint to Add a training in pro's profile.
       parameters:
         - name: proReferenceId
           in: path
@@ -594,7 +594,7 @@ paths:
           description: New object to add.
           required: true
           schema:
-            $ref: '#/definitions/ProEducation'
+            $ref: '#/definitions/Training'
       responses:
         200:
           description: Successful operation
@@ -609,15 +609,15 @@ paths:
         - Registration
         - Profile
         - Education
-      summary: Delete All pro's education in a profile.
-      description: The endpoint to delete All education in pro's profile.
+      summary: Delete All pro's training in a profile.
+      description: The endpoint to delete All training in pro's profile.
       produces:
         - application/json
         - application/xml
       parameters:
         - name: proReferenceId
           in: path
-          description: Unique pro identifier which its education will be deleted.
+          description: Unique pro identifier which its training will be deleted.
           required: true
           type: integer
       responses:
@@ -629,10 +629,10 @@ paths:
           description: An error with a status code between 4XX and 5XX
           schema:
             $ref: '#/definitions/Error'
-  /pros/{proReferenceId}/pro-educations/{proEduReferenceId}:
+  /pros/{proReferenceId}/trainings/{trainingReferenceId}:
     get:
-      summary: Retrieve Pro's specific education.
-      description: The endpoint is used to retrieve unique education on pro's profile associated with the given proEduReference ID.
+      summary: Retrieve Pro's specific training.
+      description: The endpoint is used to retrieve unique training on pro's profile associated with the given proEduReference ID.
       produces:
         - application/json
         - application/xml
@@ -641,17 +641,17 @@ paths:
         in: path
         description: Unique Pro Identifier which owns retrieved services.
         required: true
-        type: integer
-      - name: proEduReferenceId
+        type: string
+      - name: trainingReferenceId
         in: path
-        description: Unique education Identifier which will be retrieved.
+        description: Unique training Identifier which will be retrieved.
         required: true
-        type: integer
+        type: string
       responses:
         200:
-          description: pro's specific education retrieved.
+          description: pro's specific training retrieved.
           schema:
-            $ref: '#/definitions/ProEducation'
+            $ref: '#/definitions/Training'
         default:
           description: An error with a status code between 4XX and 5XX
           schema:
@@ -666,18 +666,18 @@ paths:
           in: path
           description: Unique Pro Identifier for the pro profile.
           required: true
-          type: integer
-        - name: proEduReferenceId
+          type: string
+        - name: trainingReferenceId
           in: path
-          description: Unique education Identifier which will be retrieved.
+          description: Unique training Identifier which will be retrieved.
           required: true
-          type: integer
+          type: string
         - name: body
           in: body
           description: updated object.
           required: true
           schema:
-            $ref: '#/definitions/ProEducation'
+            $ref: '#/definitions/Training'
       responses:
         200:
           description: Successful operation
@@ -693,19 +693,19 @@ paths:
         - Profile
         - Education
       summary: Delete pro Education information.
-      description: The endpoint to delete pro education information.
+      description: The endpoint to delete pro training information.
       produces:
         - application/json
         - application/xml
       parameters:
         - name: proReferenceId
           in: path
-          description: Unique pro identifier which one of its education will be deleted.
+          description: Unique pro identifier which one of its training will be deleted.
           required: true
           type: integer
-        - name: proEduReferenceId
+        - name: trainingReferenceId
           in: path
-          description: Unique education Identifier which will be deleted.
+          description: Unique training Identifier which will be deleted.
           required: true
           type: integer
       responses:
@@ -736,7 +736,7 @@ definitions:
         description: a list a education a pro has acquired in and completed or in progress.
         type: array
         items:
-          $ref: '#/definitions/ProEducation'
+          $ref: '#/definitions/Training'
    Pro:
     type: object
     required:
@@ -846,32 +846,32 @@ definitions:
       serviceDescription:
         type: string
         description : description of the offered service 
-   ProEducation:
+   Training:
     type: object
     required:
-     - college
+     - institution
      - startDate
      - descpline
      - award
     properties:
-      college:
+      institution:
         type: string
       startDate:
        type: string
-       description: Start date of the college Ex. 2016-05-30
+       description: Start date of the program Ex. 2016-05-30
        format: yyyy-MM-dd
       endDate:
        type: string
-       description: latest/last date to a college Ex. 2016-07-30
+       description: latest/last date to a program Ex. 2016-07-30
        format: yyyy-MM-dd
       descpline:
         type: string
-        description: Domain of your education Ex. IT
+        description: Domain of your training Ex. IT
       award: 
         type: string
-        description: Level of education EX. Degree, certificate, training
+        description: Award awarded EX. Degree, certificate.
       attachments:
-        description: a list of attachments to support this education.
+        description: a list of attachments to support this training.
         type: array
         items:
           $ref: '#/definitions/Attachment'
@@ -933,6 +933,16 @@ definitions:
       oldPassword:
         type: string
       newPassword:
+        type: string
+   LoginResource:
+    type: object
+    required:
+      - email
+      - password
+    properties:
+      email:
+        type: string
+      password:
         type: string
    MessageResource:
     type: object
