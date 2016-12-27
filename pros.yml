@@ -16,8 +16,18 @@ paths:
       tags: 
         - Registration
         - Profile
+        - Activation
       summary: Activation endpoint.
+      description: End point to verify the validity of the pro credentials. EX. the email address you used during registration its your email address and you still have access on it.
       parameters:
+        - name: user-token
+          in: header
+          required: false
+          type: string
+        - name: proReferenceId
+          in: header
+          type: string
+          required: false
         - name: activationCode
           in: path
           description: Activation code to verify
@@ -41,15 +51,15 @@ paths:
       parameters:
         - name: login
           in: body
-          description: Login resource with login credetials
+          description: Login resource with login credetials(emailAdress and password)
           required: true
           schema:
             $ref: '#/definitions/LoginResource'
       responses:
         200:
-          description: succesful operation
+          description: succesful operation returns user-token, proReferenceId, firstName, lastName.
           schema:
-            $ref: '#/definitions/MessageResource'
+            $ref: '#/definitions/LoginResponse'
         default:
           description: An error with a status code between 4XX and 5XX
           schema:
@@ -59,7 +69,8 @@ paths:
       tags:
         - Registration
         - Profile
-      description: Create new pros for sign up.
+      summary: Create new pros for sign up.
+      description: An endpoint for creating a new pros for sign up with basic information. An email will be sent to a registered email address with a verification link.
       produces:
         - application/json
         - application/xml
@@ -72,7 +83,7 @@ paths:
             $ref: '#/definitions/Pro'
       responses:
         200:
-          description: Successful created.
+          description: Successful created and verification email sent.
           schema:
             $ref: '#/definitions/MessageResource'
         default:
@@ -88,6 +99,14 @@ paths:
         This pros endpoint returns information summay about pro who are offering 
         various services. The response includes pro basic information and services they offer.
       parameters:
+        - name: user-token
+          in: header
+          required: false
+          type: string
+        - name: proReferenceId
+          in: header
+          type: string
+          required: false
         - name: page
           in: query
           description: A page number of the returned value. Default is one.
@@ -119,6 +138,14 @@ paths:
       description: |
         The pros endpoint returns information for a specific pro.
       parameters:
+        - name: user-token
+          in: header
+          required: false
+          type: string
+        - name: proReferenceId
+          in: header
+          type: string
+          required: false
         - name: proReferenceId
           in: path
           description: Unique pro identifier which its result will be returned.
@@ -143,6 +170,14 @@ paths:
         - application/json
         - application/xml
       parameters:
+        - name: user-token
+          in: header
+          required: true
+          type: string
+        - name: proReferenceId
+          in: header
+          type: string
+          required: true
         - name: proReferenceId
           in: path
           description: Unique pro identifier which its information will be updated.
@@ -173,6 +208,14 @@ paths:
         - application/json
         - application/xml
       parameters:
+        - name: user-token
+          in: header
+          required: true
+          type: string
+        - name: proReferenceId
+          in: header
+          type: string
+          required: true
         - name: proReferenceId
           in: path
           description: Unique pro identifier which its information will be deleted.
@@ -193,6 +236,14 @@ paths:
         - Profile
         - Login
       parameters:
+        - name: user-token
+          in: header
+          required: true
+          type: string
+        - name: proReferenceId
+          in: header
+          type: string
+          required: true
         - name: proReferenceId
           in: path
           description: Unique Pro Identifier for the pro profile.
@@ -224,11 +275,19 @@ paths:
         - application/json
         - application/xml
       parameters:
-      - name: proReferenceId
-        in: path
-        description: Unique Pro Identifier which owns all retrieved projects.
-        required: true
-        type: integer
+        - name: user-token
+          in: header
+          required: false
+          type: string
+        - name: userReferenceId
+          in: header
+          type: string
+          required: false
+        - name: proReferenceId
+          in: path
+          description: Unique Pro Identifier which owns all retrieved projects.
+          required: true
+          type: integer
       responses:
         200:
           description: pro's completed projects.
@@ -248,6 +307,14 @@ paths:
       summary: Add new project in a profile.
       description: The endpoint to Add a project in pro's profile.
       parameters:
+        - name: user-token
+          in: header
+          required: true
+          type: string
+        - name: proReferenceId
+          in: header
+          type: string
+          required: true
         - name: proReferenceId
           in: path
           description: Unique Pro Identifier for the pro profile.
@@ -277,6 +344,14 @@ paths:
         - application/json
         - application/xml
       parameters:
+        - name: user-token
+          in: header
+          required: true
+          type: string
+        - name: proReferenceId
+          in: header
+          type: string
+          required: true
         - name: proReferenceId
           in: path
           description: Unique pro identifier which its projects will be deleted.
@@ -303,16 +378,24 @@ paths:
         - application/json
         - application/xml
       parameters:
-      - name: proReferenceId
-        in: path
-        description: Unique Pro Identifier which owns retrieved project.
-        required: true
-        type: integer
-      - name: projectReferenceId
-        in: path
-        description: Unique Project Identifier which will be retrieved.
-        required: true
-        type: integer
+        - name: user-token
+          in: header
+          required: false
+          type: string
+        - name: proReferenceId
+          in: header
+          type: string
+          required: false
+        - name: proReferenceId
+          in: path
+          description: Unique Pro Identifier which owns retrieved project.
+          required: true
+          type: integer
+        - name: projectReferenceId
+          in: path
+          description: Unique Project Identifier which will be retrieved.
+          required: true
+          type: integer
       responses:
         200:
           description: pro's specific project retrieved.
@@ -328,6 +411,14 @@ paths:
         - Registration
         - Projects
       parameters:
+        - name: user-token
+          in: header
+          required: true
+          type: string
+        - name: proReferenceId
+          in: header
+          type: string
+          required: true
         - name: proReferenceId
           in: path
           description: Unique Pro Identifier for the pro profile.
@@ -362,6 +453,14 @@ paths:
         - application/json
         - application/xml
       parameters:
+        - name: user-token
+          in: header
+          required: true
+          type: string
+        - name: proReferenceId
+          in: header
+          type: string
+          required: true
         - name: proReferenceId
           in: path
           description: Unique pro identifier which one of its project will be deleted.
@@ -393,11 +492,19 @@ paths:
         - application/json
         - application/xml
       parameters:
-      - name: proReferenceId
-        in: path
-        description: Unique pro Identifier which owns all retrieved services.
-        required: true
-        type: integer
+        - name: user-token
+          in: header
+          required: true
+          type: string
+        - name: proReferenceId
+          in: header
+          type: string
+          required: true
+        - name: proReferenceId
+          in: path
+          description: Unique pro Identifier which owns all retrieved services.
+          required: true
+          type: integer
       responses:
         200:
           description: Pro's services.
@@ -417,6 +524,14 @@ paths:
       summary: Add new service in a profile.
       description: The endpoint to Add a service in pro's profile.
       parameters:
+        - name: user-token
+          in: header
+          required: true
+          type: string
+        - name: proReferenceId
+          in: header
+          type: string
+          required: true
         - name: proReferenceId
           in: path
           description: Unique Pro Identifier for the pro profile.
@@ -446,6 +561,14 @@ paths:
         - application/json
         - application/xml
       parameters:
+        - name: user-token
+          in: header
+          required: true
+          type: string
+        - name: proReferenceId
+          in: header
+          type: string
+          required: true
         - name: proReferenceId
           in: path
           description: Unique pro identifier which its services will be deleted.
@@ -468,16 +591,24 @@ paths:
         - application/json
         - application/xml
       parameters:
-      - name: proReferenceId
-        in: path
-        description: Unique Pro Identifier which owns retrieved services.
-        required: true
-        type: integer
-      - name: serviceReferenceId
-        in: path
-        description: Unique service Identifier which will be retrieved.
-        required: true
-        type: integer
+        - name: user-token
+          in: header
+          required: false
+          type: string
+        - name: proReferenceId
+          in: header
+          type: string
+          required: false
+        - name: proReferenceId
+          in: path
+          description: Unique Pro Identifier which owns retrieved services.
+          required: true
+          type: integer
+        - name: serviceReferenceId
+          in: path
+          description: Unique service Identifier which will be retrieved.
+          required: true
+          type: integer
       responses:
         200:
           description: pro's specific service retrieved.
@@ -493,6 +624,14 @@ paths:
         - Registration
         - Services
       parameters:
+        - name: user-token
+          in: header
+          required: true
+          type: string
+        - name: proReferenceId
+          in: header
+          type: string
+          required: true
         - name: proReferenceId
           in: path
           description: Unique Pro Identifier for the pro profile.
@@ -500,7 +639,7 @@ paths:
           type: integer
         - name: serviceReferenceId
           in: path
-          description: Unique service Identifier which will be retrieved.
+          description: Unique service Identifier which will be updated.
           required: true
           type: integer
         - name: body
@@ -529,6 +668,14 @@ paths:
         - application/json
         - application/xml
       parameters:
+        - name: user-token
+          in: header
+          required: true
+          type: string
+        - name: proReferenceId
+          in: header
+          type: string
+          required: true
         - name: proReferenceId
           in: path
           description: Unique pro identifier which one of its project will be deleted.
@@ -554,17 +701,26 @@ paths:
         - Profile
         - Registration
         - Education
+        - Training
       summary: Retrieve Pro's pro trainings he/she has acquired.
       description: The endpoint is used to retrieve all services on pro's profile associated with the given pro ID.
       produces:
         - application/json
         - application/xml
       parameters:
-      - name: proReferenceId
-        in: path
-        description: Unique pro Identifier which owns all retrieved pro training.
-        required: true
-        type: integer
+        - name: user-token
+          in: header
+          required: false
+          type: string
+        - name: proReferenceId
+          in: header
+          type: string
+          required: false
+        - name: proReferenceId
+          in: path
+          description: Unique pro Identifier which owns all retrieved pro training.
+          required: true
+          type: integer
       responses:
         200:
           description: Pro's trainings.
@@ -581,9 +737,18 @@ paths:
         - Profile
         - Registration
         - Education
+        - Training
       summary: Add new training in a profile.
       description: The endpoint to Add a training in pro's profile.
       parameters:
+        - name: user-token
+          in: header
+          required: true
+          type: string
+        - name: proReferenceId
+          in: header
+          type: string
+          required: true
         - name: proReferenceId
           in: path
           description: Unique Pro Identifier for the pro profile.
@@ -609,12 +774,21 @@ paths:
         - Registration
         - Profile
         - Education
+        - Training
       summary: Delete All pro's training in a profile.
       description: The endpoint to delete All training in pro's profile.
       produces:
         - application/json
         - application/xml
       parameters:
+        - name: user-token
+          in: header
+          required: true
+          type: string
+        - name: proReferenceId
+          in: header
+          type: string
+          required: true
         - name: proReferenceId
           in: path
           description: Unique pro identifier which its training will be deleted.
@@ -631,22 +805,35 @@ paths:
             $ref: '#/definitions/Error'
   /pros/{proReferenceId}/trainings/{trainingReferenceId}:
     get:
+      tags:
+        - Registration
+        - Profile
+        - Education
+        - Training
       summary: Retrieve Pro's specific training.
       description: The endpoint is used to retrieve unique training on pro's profile associated with the given proEduReference ID.
       produces:
         - application/json
         - application/xml
       parameters:
-      - name: proReferenceId
-        in: path
-        description: Unique Pro Identifier which owns retrieved services.
-        required: true
-        type: string
-      - name: trainingReferenceId
-        in: path
-        description: Unique training Identifier which will be retrieved.
-        required: true
-        type: string
+        - name: user-token
+          in: header
+          required: false
+          type: string
+        - name: proReferenceId
+          in: header
+          type: string
+          required: false
+        - name: proReferenceId
+          in: path
+          description: Unique Pro Identifier which owns retrieved services.
+          required: true
+          type: string
+        - name: trainingReferenceId
+          in: path
+          description: Unique training Identifier which will be retrieved.
+          required: true
+          type: string
       responses:
         200:
           description: pro's specific training retrieved.
@@ -661,7 +848,16 @@ paths:
         - Profile
         - Registration
         - Education
+        - Training
       parameters:
+        - name: user-token
+          in: header
+          required: true
+          type: string
+        - name: proReferenceId
+          in: header
+          type: string
+          required: true
         - name: proReferenceId
           in: path
           description: Unique Pro Identifier for the pro profile.
@@ -669,7 +865,7 @@ paths:
           type: string
         - name: trainingReferenceId
           in: path
-          description: Unique training Identifier which will be retrieved.
+          description: Unique training Identifier which will be updated.
           required: true
           type: string
         - name: body
@@ -692,12 +888,21 @@ paths:
         - Registration
         - Profile
         - Education
+        - Training
       summary: Delete pro Education information.
       description: The endpoint to delete pro training information.
       produces:
         - application/json
         - application/xml
       parameters:
+        - name: user-token
+          in: header
+          required: true
+          type: string
+        - name: proReferenceId
+          in: header
+          type: string
+          required: true
         - name: proReferenceId
           in: path
           description: Unique pro identifier which one of its training will be deleted.
@@ -717,6 +922,63 @@ paths:
           description: An error with a status code between 4XX and 5XX
           schema:
             $ref: '#/definitions/Error'
+  /pros/attachments/{attachmentReferenceId}:
+   post:
+    tags:
+     - Uploads
+     - Attachments
+    consumes:
+     - multipart/form-data
+    produces:
+     - application/json
+    summary: An end-point to handle any Pros relates uploads Ex. photo-ID, profile-picture etc.
+    description: |
+      This end-point upload an attachment to the specified upload-category , attachment size should not exceed 1MB, supported types are [png,jpeg,jpg,pdf]. This API returns the attahment location
+    parameters:
+     - name: user-token
+       in: header
+       required: true
+       type: string
+     - name:  proReferenceId
+       in: header
+       type: string
+       required: true
+     - name: attachmentReferenceId
+       description: Pro referenceId to assocsite with this attachment.
+       in: path
+       type: string
+       required: true
+     - name: attachmentCategory
+       in: query
+       type: string
+       description: Accepted value is one of  `[PHOTO_ID, PROFILE_PICTURE]`
+       required: true
+     - name: attachmentDescription
+       in: query
+       type: string
+       required: true
+       description: this denotes attachment description, like caption etc
+     - name: isThumbnail
+       in: query
+       type: boolean
+       description: indicates wheather the image should be used as a thumbnail, default is `false`
+     - name: attachment
+       description: The actual file to upload, size should not exceed `1MB`
+       in: formData
+       type: file
+       required: true
+    responses:
+      200:
+        description: Attachment uploaded successfuly
+        schema:
+         type: object
+         properties:
+           attachmnetUrl:
+            type: string
+      default:
+        description: An error with a status code between `4XX` and `5XX`
+        schema:
+          $ref: "#/definitions/Error"
 definitions:
    ProDetails:
     type: object
@@ -789,24 +1051,24 @@ definitions:
          $ref: '#/definitions/ServiceOffering'
    Attachment:
     type: object
-    required:
-      - id
-      - name
-      - byteArray
-      - extension
     properties:
-      id:
-        type: integer
-        description: Attachment ID.
-      name:
+      fileType:
         type: string
-        description: Attachment file name
-      byteArray:
-        type: object
-        description: Array stream of the attachment content.
-      extension:
+      fileName:
         type: string
-        description: File extension of an attachment. eg. pdf, txt, doc, exls.
+      fileSize:
+        type: number
+        format: double
+        description: orginal content size in bytes
+      contentBase64:
+        type: string
+        description: base64 encoded attachment content. for Pictures etc
+      fileDescription:
+        type: string
+        description: A brief description of the image - user enters the description while uploading the pic
+      category:
+        type: string
+        description: Category of the attachment. Accepted value is one of  `[PHOTO_ID, PROFILE_PICTURE]`
    Project:
     type: object
     required:
@@ -944,6 +1206,28 @@ definitions:
         type: string
       password:
         type: string
+   LoginResponse:
+    type: object
+    required:
+      - user-token
+      - proReferenceId
+      - firstName
+      - lastName
+    properties:
+      firstName:
+        type: string
+        description: logged in user's first name
+      lastName:
+        type: string
+        description: logged in user's last name
+      proReferenceId:
+        type: string
+        description: to be used in subsequent api calls
+      user-token:
+        type: string
+        description: expiring encrypted access token, to be used in all API call for the loggged in user
+      message:
+        $ref: '#/definitions/MessageResource'
    MessageResource:
     type: object
     properties:
