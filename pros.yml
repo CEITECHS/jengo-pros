@@ -971,10 +971,7 @@ paths:
       200:
         description: Attachment uploaded successfuly
         schema:
-         type: object
-         properties:
-           attachmnetUrl:
-            type: string
+         $ref: "#/definitions/AttachmentUrl"
       default:
         description: An error with a status code between `4XX` and `5XX`
         schema:
@@ -986,9 +983,9 @@ definitions:
       basicInfo:
        $ref: '#/definitions/Pro'
       profilePicture:
-       $ref: '#/definitions/Attachment'
+       $ref: '#/definitions/AttachmentUrl'
       photoID:
-        $ref: '#/definitions/Attachment'
+        $ref: '#/definitions/AttachmentUrl'
       projects:
         description: a list a projects a pro has participated in and completed
         type: array
@@ -1069,6 +1066,13 @@ definitions:
       category:
         type: string
         description: Category of the attachment. Accepted value is one of  `[PHOTO_ID, PROFILE_PICTURE]`
+   AttachmentUrl:
+    type: object
+    required:
+      - attachmentUrl
+    properties:
+      attachmentUrl:
+        type: string
    Project:
     type: object
     required:
