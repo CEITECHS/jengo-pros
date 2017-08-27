@@ -1,24 +1,24 @@
-# Proffesionals/Experts API - Pros API 
-# Pros API spec in YAML
 swagger: '2.0'
 info:
   title: Pros API
-  description:  Pros API - is an API to track Contractor work done by proffessionals       or experts in different domain. A contactor can be a person or a company.
-  version: "0.0.1"
-# Host Url
+  description: >-
+    Pros API - is an API to track Contractor work done by proffessionals      
+    or experts in different domain. A contactor can be a person or a company.
+  version: 0.0.1
 host: api.pros.com
-produces: 
+produces:
   - application/json
   - application/xml
 paths:
-  /pros/activate/{activationCode}:
+  '/pros/activate/{activationCode}':
     put:
-      tags: 
-        - Registration
-        - Profile
-        - Activation
+      tags:
+        - Login and Activation
       summary: Activation endpoint.
-      description: End point to verify the validity of the pro credentials. EX. the email address you used during registration its your email address and you still have access on it.
+      description: >-
+        End point to verify the validity of the pro credentials. EX. the email
+        address you used during registration its your email address and you
+        still have access on it.
       parameters:
         - name: user-token
           in: header
@@ -34,7 +34,7 @@ paths:
           required: true
           type: string
       responses:
-        200:
+        '200':
           description: sucessful operation.
           schema:
             $ref: '#/definitions/MessageResource'
@@ -45,8 +45,7 @@ paths:
   /pros/login:
     post:
       tags:
-        - Profile
-        - Login
+        - Login and Activation
       summary: Login endpoint
       parameters:
         - name: login
@@ -56,8 +55,10 @@ paths:
           schema:
             $ref: '#/definitions/LoginResource'
       responses:
-        200:
-          description: succesful operation returns user-token, proReferenceId, firstName, lastName.
+        '200':
+          description: >-
+            succesful operation returns user-token, proReferenceId, firstName,
+            lastName.
           schema:
             $ref: '#/definitions/LoginResponse'
         default:
@@ -65,12 +66,14 @@ paths:
           schema:
             $ref: '#/definitions/Error'
   /pros:
-     post:
+    post:
       tags:
-        - Registration
         - Profile
       summary: Create new pros for sign up.
-      description: An endpoint for creating a new pros for sign up with basic information. An email will be sent to a registered email address with a verification link.
+      description: >-
+        An endpoint for creating a new pros for sign up with basic information.
+        An email will be sent to a registered email address with a verification
+        link.
       produces:
         - application/json
         - application/xml
@@ -82,7 +85,7 @@ paths:
           schema:
             $ref: '#/definitions/Pro'
       responses:
-        200:
+        '200':
           description: Successful created and verification email sent.
           schema:
             $ref: '#/definitions/MessageResource'
@@ -90,14 +93,16 @@ paths:
           description: An error with a status code between 4XX and 5XX
           schema:
             $ref: '#/definitions/Error'
-     get:
+    get:
       tags:
-        - Registration
         - Profile
       summary: pro list
-      description: |
-        This pros endpoint returns information summay about pro who are offering 
-        various services. The response includes pro basic information and services they offer.
+      description: >
+        This pros endpoint returns information summay about pro who are
+        offering 
+
+        various services. The response includes pro basic information and
+        services they offer.
       parameters:
         - name: user-token
           in: header
@@ -115,13 +120,17 @@ paths:
           required: false
         - name: size
           in: query
-          description: Number of items to retrieve in a page. Default is 10. Maximum is 100.
+          description: >-
+            Number of items to retrieve in a page. Default is 10. Maximum is
+            100.
           type: integer
           format: int32
           required: false
-      responses: 
-        200: 
-          description: An array of pro with basic information and services they've to offer.
+      responses:
+        '200':
+          description: >-
+            An array of pro with basic information and services they've to
+            offer.
           schema:
             type: array
             items:
@@ -130,10 +139,9 @@ paths:
           description: An error with a status code between 4XX and 5XX
           schema:
             $ref: '#/definitions/Error'
-  /pros/{proReferenceId}:
+  '/pros/{proReferenceId}':
     get:
       tags:
-        - Registration
         - Profile
       description: |
         The pros endpoint returns information for a specific pro.
@@ -152,7 +160,7 @@ paths:
           required: true
           type: integer
       responses:
-        200:
+        '200':
           description: pro's information.
           schema:
             $ref: '#/definitions/ProDetails'
@@ -163,7 +171,6 @@ paths:
     put:
       tags:
         - Profile
-        - Registration
       summary: Update pro information.
       description: The endpoint to update pro information.
       produces:
@@ -190,7 +197,7 @@ paths:
           schema:
             $ref: '#/definitions/ProDetails'
       responses:
-        200:
+        '200':
           description: Successful operation
           schema:
             $ref: '#/definitions/MessageResource'
@@ -200,7 +207,6 @@ paths:
             $ref: '#/definitions/Error'
     delete:
       tags:
-        - Registration
         - Profile
       summary: Delete pro information.
       description: The endpoint to delete pro information.
@@ -222,7 +228,7 @@ paths:
           required: true
           type: integer
       responses:
-        200:
+        '200':
           description: Successful operation
           schema:
             $ref: '#/definitions/MessageResource'
@@ -230,11 +236,10 @@ paths:
           description: An error with a status code between 4XX and 5XX
           schema:
             $ref: '#/definitions/Error'
-  /pros/{proReferenceId}/profile/change-password:
+  '/pros/{proReferenceId}/profile/change-password':
     put:
       tags:
         - Profile
-        - Login
       parameters:
         - name: user-token
           in: header
@@ -256,21 +261,21 @@ paths:
           schema:
             $ref: '#/definitions/ChangePasswordResource'
       responses:
-        200:
+        '200':
           description: Successful operation
         default:
           description: Unexpected Error
           schema:
             $ref: '#/definitions/Error'
-            
-  /pros/{proReferenceId}/projects:
+  '/pros/{proReferenceId}/projects':
     get:
       tags:
         - Profile
-        - Registration
         - Projects
       summary: Retrieve Pro's projects.
-      description: The endpoint is used to retrieve all projects on pro's profile associated with the given pro ID.
+      description: >-
+        The endpoint is used to retrieve all projects on pro's profile
+        associated with the given pro ID.
       produces:
         - application/json
         - application/xml
@@ -289,7 +294,7 @@ paths:
           required: true
           type: integer
       responses:
-        200:
+        '200':
           description: pro's completed projects.
           schema:
             type: array
@@ -302,7 +307,6 @@ paths:
     post:
       tags:
         - Profile
-        - Registration
         - Projects
       summary: Add new project in a profile.
       description: The endpoint to Add a project in pro's profile.
@@ -327,7 +331,7 @@ paths:
           schema:
             $ref: '#/definitions/Project'
       responses:
-        200:
+        '200':
           description: Successful operation
         default:
           description: Unexpected Error
@@ -335,7 +339,6 @@ paths:
             $ref: '#/definitions/Error'
     delete:
       tags:
-        - Registration
         - Profile
         - Projects
       summary: Delete All projects in a profile.
@@ -358,7 +361,7 @@ paths:
           required: true
           type: integer
       responses:
-        200:
+        '200':
           description: Successful operation
           schema:
             $ref: '#/definitions/MessageResource'
@@ -366,14 +369,14 @@ paths:
           description: An error with a status code between 4XX and 5XX
           schema:
             $ref: '#/definitions/Error'
-  /pros/{proReferenceId}/projects/{projectReferenceId}:
+  '/pros/{proReferenceId}/projects/{projectReferenceId}':
     get:
       tags:
-        - Profile
-        - Registration
         - Projects
       summary: Retrieve Pro's specific project.
-      description: The endpoint is used to retrieve unique project on pro's profile associated with the given projectReference ID.
+      description: >-
+        The endpoint is used to retrieve unique project on pro's profile
+        associated with the given projectReference ID.
       produces:
         - application/json
         - application/xml
@@ -397,7 +400,7 @@ paths:
           required: true
           type: integer
       responses:
-        200:
+        '200':
           description: pro's specific project retrieved.
           schema:
             $ref: '#/definitions/Project'
@@ -407,8 +410,6 @@ paths:
             $ref: '#/definitions/Error'
     put:
       tags:
-        - Profile
-        - Registration
         - Projects
       parameters:
         - name: user-token
@@ -436,7 +437,7 @@ paths:
           schema:
             $ref: '#/definitions/Project'
       responses:
-        200:
+        '200':
           description: Successful operation
         default:
           description: Unexpected Error
@@ -444,8 +445,6 @@ paths:
             $ref: '#/definitions/Error'
     delete:
       tags:
-        - Registration
-        - Profile
         - Projects
       summary: Delete pro information.
       description: The endpoint to delete pro project information.
@@ -472,7 +471,7 @@ paths:
           required: true
           type: integer
       responses:
-        200:
+        '200':
           description: Successful operation
           schema:
             $ref: '#/definitions/MessageResource'
@@ -480,14 +479,14 @@ paths:
           description: An error with a status code between 4XX and 5XX
           schema:
             $ref: '#/definitions/Error'
-  /pros/{proReferenceId}/services:
+  '/pros/{proReferenceId}/services':
     get:
       tags:
-        - Profile
-        - Registration
         - Services
       summary: Retrieve Pro's services offered.
-      description: The endpoint is used to retrieve all services on pro's profile associated with the given pro ID.
+      description: >-
+        The endpoint is used to retrieve all services on pro's profile
+        associated with the given pro ID.
       produces:
         - application/json
         - application/xml
@@ -506,7 +505,7 @@ paths:
           required: true
           type: integer
       responses:
-        200:
+        '200':
           description: Pro's services.
           schema:
             type: array
@@ -518,8 +517,6 @@ paths:
             $ref: '#/definitions/Error'
     post:
       tags:
-        - Profile
-        - Registration
         - Services
       summary: Add new service in a profile.
       description: The endpoint to Add a service in pro's profile.
@@ -544,7 +541,7 @@ paths:
           schema:
             $ref: '#/definitions/ServiceOffering'
       responses:
-        200:
+        '200':
           description: Successful operation
         default:
           description: Unexpected Error
@@ -552,8 +549,6 @@ paths:
             $ref: '#/definitions/Error'
     delete:
       tags:
-        - Registration
-        - Profile
         - Services
       summary: Delete All services in a profile.
       description: The endpoint to delete All services in pro's profile.
@@ -575,7 +570,7 @@ paths:
           required: true
           type: integer
       responses:
-        200:
+        '200':
           description: Successful operation
           schema:
             $ref: '#/definitions/MessageResource'
@@ -583,10 +578,14 @@ paths:
           description: An error with a status code between 4XX and 5XX
           schema:
             $ref: '#/definitions/Error'
-  /pros/{proReferenceId}/services/{serviceReferenceId}:
+  '/pros/{proReferenceId}/services/{serviceReferenceId}':
     get:
+      tags:
+        - Services
       summary: Retrieve Pro's specific service.
-      description: The endpoint is used to retrieve unique service on pro's profile associated with the given serviceReference ID.
+      description: >-
+        The endpoint is used to retrieve unique service on pro's profile
+        associated with the given serviceReference ID.
       produces:
         - application/json
         - application/xml
@@ -610,7 +609,7 @@ paths:
           required: true
           type: integer
       responses:
-        200:
+        '200':
           description: pro's specific service retrieved.
           schema:
             $ref: '#/definitions/ServiceOffering'
@@ -620,8 +619,6 @@ paths:
             $ref: '#/definitions/Error'
     put:
       tags:
-        - Profile
-        - Registration
         - Services
       parameters:
         - name: user-token
@@ -649,7 +646,7 @@ paths:
           schema:
             $ref: '#/definitions/ServiceOffering'
       responses:
-        200:
+        '200':
           description: Successful operation
           schema:
             $ref: '#/definitions/MessageResource'
@@ -659,8 +656,6 @@ paths:
             $ref: '#/definitions/Error'
     delete:
       tags:
-        - Registration
-        - Profile
         - Services
       summary: Delete pro information.
       description: The endpoint to delete pro services information.
@@ -687,7 +682,7 @@ paths:
           required: true
           type: integer
       responses:
-        200:
+        '200':
           description: Successful operation
           schema:
             $ref: '#/definitions/MessageResource'
@@ -695,15 +690,15 @@ paths:
           description: An error with a status code between 4XX and 5XX
           schema:
             $ref: '#/definitions/Error'
-  /pros/{proReferenceId}/trainings:
+  '/pros/{proReferenceId}/trainings':
     get:
       tags:
         - Profile
-        - Registration
-        - Education
         - Training
       summary: Retrieve Pro's pro trainings he/she has acquired.
-      description: The endpoint is used to retrieve all services on pro's profile associated with the given pro ID.
+      description: >-
+        The endpoint is used to retrieve all services on pro's profile
+        associated with the given pro ID.
       produces:
         - application/json
         - application/xml
@@ -722,7 +717,7 @@ paths:
           required: true
           type: integer
       responses:
-        200:
+        '200':
           description: Pro's trainings.
           schema:
             type: array
@@ -735,8 +730,6 @@ paths:
     post:
       tags:
         - Profile
-        - Registration
-        - Education
         - Training
       summary: Add new training in a profile.
       description: The endpoint to Add a training in pro's profile.
@@ -761,7 +754,7 @@ paths:
           schema:
             $ref: '#/definitions/Training'
       responses:
-        200:
+        '200':
           description: Successful operation
           schema:
             $ref: '#/definitions/MessageResource'
@@ -771,9 +764,7 @@ paths:
             $ref: '#/definitions/Error'
     delete:
       tags:
-        - Registration
         - Profile
-        - Education
         - Training
       summary: Delete All pro's training in a profile.
       description: The endpoint to delete All training in pro's profile.
@@ -795,7 +786,7 @@ paths:
           required: true
           type: integer
       responses:
-        200:
+        '200':
           description: Successful operation
           schema:
             $ref: '#/definitions/MessageResource'
@@ -803,15 +794,15 @@ paths:
           description: An error with a status code between 4XX and 5XX
           schema:
             $ref: '#/definitions/Error'
-  /pros/{proReferenceId}/trainings/{trainingReferenceId}:
+  '/pros/{proReferenceId}/trainings/{trainingReferenceId}':
     get:
       tags:
-        - Registration
         - Profile
-        - Education
         - Training
       summary: Retrieve Pro's specific training.
-      description: The endpoint is used to retrieve unique training on pro's profile associated with the given proEduReference ID.
+      description: >-
+        The endpoint is used to retrieve unique training on pro's profile
+        associated with the given proEduReference ID.
       produces:
         - application/json
         - application/xml
@@ -835,7 +826,7 @@ paths:
           required: true
           type: string
       responses:
-        200:
+        '200':
           description: pro's specific training retrieved.
           schema:
             $ref: '#/definitions/Training'
@@ -846,8 +837,6 @@ paths:
     put:
       tags:
         - Profile
-        - Registration
-        - Education
         - Training
       parameters:
         - name: user-token
@@ -875,7 +864,7 @@ paths:
           schema:
             $ref: '#/definitions/Training'
       responses:
-        200:
+        '200':
           description: Successful operation
           schema:
             $ref: '#/definitions/MessageResource'
@@ -885,9 +874,7 @@ paths:
             $ref: '#/definitions/Error'
     delete:
       tags:
-        - Registration
         - Profile
-        - Education
         - Training
       summary: Delete pro Education information.
       description: The endpoint to delete pro training information.
@@ -914,7 +901,7 @@ paths:
           required: true
           type: integer
       responses:
-        200:
+        '200':
           description: Successful operation
           schema:
             $ref: '#/definitions/MessageResource'
@@ -922,68 +909,73 @@ paths:
           description: An error with a status code between 4XX and 5XX
           schema:
             $ref: '#/definitions/Error'
-  /pros/attachments/{attachmentReferenceId}:
-   post:
-    tags:
-     - Uploads
-     - Attachments
-    consumes:
-     - multipart/form-data
-    produces:
-     - application/json
-    summary: An end-point to handle any Pros relates uploads Ex. photo-ID, profile-picture etc.
-    description: |
-      This end-point upload an attachment to the specified upload-category , attachment size should not exceed 1MB, supported types are [png,jpeg,jpg,pdf]. This API returns the attahment location
-    parameters:
-     - name: user-token
-       in: header
-       required: true
-       type: string
-     - name:  proReferenceId
-       in: header
-       type: string
-       required: true
-     - name: attachmentReferenceId
-       description: Pro referenceId to assocsite with this attachment.
-       in: path
-       type: string
-       required: true
-     - name: attachmentCategory
-       in: query
-       type: string
-       description: Accepted value is one of  `[PHOTO_ID, PROFILE_PICTURE]`
-       required: true
-     - name: attachmentDescription
-       in: query
-       type: string
-       required: true
-       description: this denotes attachment description, like caption etc
-     - name: isThumbnail
-       in: query
-       type: boolean
-       description: indicates wheather the image should be used as a thumbnail, default is `false`
-     - name: attachment
-       description: The actual file to upload, size should not exceed `1MB`
-       in: formData
-       type: file
-       required: true
-    responses:
-      200:
-        description: Attachment uploaded successfuly
-        schema:
-         $ref: "#/definitions/AttachmentUrl"
-      default:
-        description: An error with a status code between `4XX` and `5XX`
-        schema:
-          $ref: "#/definitions/Error"
+  '/pros/attachments/{attachmentReferenceId}':
+    post:
+      tags:
+        - Attachments
+      consumes:
+        - multipart/form-data
+      produces:
+        - application/json
+      summary: >-
+        An end-point to handle any Pros relates uploads Ex. photo-ID,
+        profile-picture etc.
+      description: >
+        This end-point upload an attachment to the specified upload-category ,
+        attachment size should not exceed 1MB, supported types are
+        [png,jpeg,jpg,pdf]. This API returns the attahment location
+      parameters:
+        - name: user-token
+          in: header
+          required: true
+          type: string
+        - name: proReferenceId
+          in: header
+          type: string
+          required: true
+        - name: attachmentReferenceId
+          description: Pro referenceId to assocsite with this attachment.
+          in: path
+          type: string
+          required: true
+        - name: attachmentCategory
+          in: query
+          type: string
+          description: 'Accepted value is one of  `[PHOTO_ID, PROFILE_PICTURE]`'
+          required: true
+        - name: attachmentDescription
+          in: query
+          type: string
+          required: true
+          description: 'this denotes attachment description, like caption etc'
+        - name: isThumbnail
+          in: query
+          type: boolean
+          description: >-
+            indicates wheather the image should be used as a thumbnail, default
+            is `false`
+        - name: attachment
+          description: 'The actual file to upload, size should not exceed `1MB`'
+          in: formData
+          type: file
+          required: true
+      responses:
+        '200':
+          description: Attachment uploaded successfuly
+          schema:
+            $ref: '#/definitions/AttachmentUrl'
+        default:
+          description: An error with a status code between `4XX` and `5XX`
+          schema:
+            $ref: '#/definitions/Error'
 definitions:
-   ProDetails:
+  ProDetails:
     type: object
     properties:
       basicInfo:
-       $ref: '#/definitions/Pro'
+        $ref: '#/definitions/Pro'
       profilePicture:
-       $ref: '#/definitions/AttachmentUrl'
+        $ref: '#/definitions/AttachmentUrl'
       photoID:
         $ref: '#/definitions/AttachmentUrl'
       projects:
@@ -996,7 +988,7 @@ definitions:
         type: array
         items:
           $ref: '#/definitions/Training'
-   Pro:
+  Pro:
     type: object
     required:
       - firstName
@@ -1008,35 +1000,37 @@ definitions:
       - operatingAs
     properties:
       proReferenceId:
-       type: string
+        type: string
       operatingAs:
-       type: string
-       description: operating model of the pro , allowed values is [Company or Individual] Ex. Individual
-       default: Individual
+        type: string
+        description: >-
+          operating model of the pro , allowed values is [Company or Individual]
+          Ex. Individual
+        default: Individual
       company:
-       type: object
-       description: company details for non-individual pros
-       properties: 
-        businessName:
-         type: string
-        phone:
-         $ref: '#/definitions/Phone'
-        emailAddress:
-         type: string
-        address:
-         $ref: '#/definitions/Address'
+        type: object
+        description: company details for non-individual pros
+        properties:
+          businessName:
+            type: string
+          phone:
+            $ref: '#/definitions/Phone'
+          emailAddress:
+            type: string
+          address:
+            $ref: '#/definitions/Address'
       firstName:
         type: string
       lastName:
-       type: string
+        type: string
       middleName:
-       type: string
+        type: string
       introText:
-       type: string
+        type: string
       phone:
-       $ref: '#/definitions/Phone'
-      address :
-       $ref: '#/definitions/Address'
+        $ref: '#/definitions/Phone'
+      address:
+        $ref: '#/definitions/Address'
       emailAddress:
         type: string
       password:
@@ -1045,8 +1039,8 @@ definitions:
         description: a list of services offered by a pro
         type: array
         items:
-         $ref: '#/definitions/ServiceOffering'
-   Attachment:
+          $ref: '#/definitions/ServiceOffering'
+  Attachment:
     type: object
     properties:
       fileType:
@@ -1062,18 +1056,22 @@ definitions:
         description: base64 encoded attachment content. for Pictures etc
       fileDescription:
         type: string
-        description: A brief description of the image - user enters the description while uploading the pic
+        description: >-
+          A brief description of the image - user enters the description while
+          uploading the pic
       category:
         type: string
-        description: Category of the attachment. Accepted value is one of  `[PHOTO_ID, PROFILE_PICTURE]`
-   AttachmentUrl:
+        description: >-
+          Category of the attachment. Accepted value is one of  `[PHOTO_ID,
+          PROFILE_PICTURE]`
+  AttachmentUrl:
     type: object
     required:
       - attachmentUrl
     properties:
       attachmentUrl:
         type: string
-   Project:
+  Project:
     type: object
     required:
       - projectName
@@ -1084,26 +1082,28 @@ definitions:
       projectName:
         type: string
       startDate:
-       type: string
-       description: the first date to a contractor started on this project Ex. 2016-05-30
-       format: yyyy-MM-dd
+        type: string
+        description: the first date to a contractor started on this project Ex. 2016-05-30
+        format: yyyy-MM-dd
       endDate:
-       type: string
-       description: latest/last date to a contractor worked on this project Ex. 2016-07-30
-       format: yyyy-MM-dd
+        type: string
+        description: latest/last date to a contractor worked on this project Ex. 2016-07-30
+        format: yyyy-MM-dd
       client:
-       $ref: '#/definitions/Client'
+        $ref: '#/definitions/Client'
       offeredServices:
         description: services offered by this pro on this particular project
         type: array
         items:
           $ref: '#/definitions/ServiceOffering'
       attachments:
-        description: a list a attachments a project has to in order to show more of his/her work.
+        description: >-
+          a list a attachments a project has to in order to show more of his/her
+          work.
         type: array
         items:
           $ref: '#/definitions/Attachment'
-   ServiceOffering:
+  ServiceOffering:
     type: object
     properties:
       serviceId:
@@ -1111,37 +1111,37 @@ definitions:
         description: Unique identifier for the service
       serviceDescription:
         type: string
-        description : description of the offered service 
-   Training:
+        description: description of the offered service
+  Training:
     type: object
     required:
-     - institution
-     - startDate
-     - descpline
-     - award
+      - institution
+      - startDate
+      - descpline
+      - award
     properties:
       institution:
         type: string
       startDate:
-       type: string
-       description: Start date of the program Ex. 2016-05-30
-       format: yyyy-MM-dd
+        type: string
+        description: Start date of the program Ex. 2016-05-30
+        format: yyyy-MM-dd
       endDate:
-       type: string
-       description: latest/last date to a program Ex. 2016-07-30
-       format: yyyy-MM-dd
+        type: string
+        description: latest/last date to a program Ex. 2016-07-30
+        format: yyyy-MM-dd
       descpline:
         type: string
         description: Domain of your training Ex. IT
-      award: 
+      award:
         type: string
-        description: Award awarded EX. Degree, certificate.
+        description: 'Award awarded EX. Degree, certificate.'
       attachments:
         description: a list of attachments to support this training.
         type: array
         items:
           $ref: '#/definitions/Attachment'
-   Client:
+  Client:
     type: object
     properties:
       fistName:
@@ -1154,7 +1154,7 @@ definitions:
         type: string
       emailAddress:
         type: string
-   Phone:
+  Phone:
     type: object
     properties:
       phoneNumber:
@@ -1165,8 +1165,10 @@ definitions:
         description: Most prefered to be contacted with.
       contactMethod:
         type: string
-        description: method you want to be contacted using this phone number. Either by text or call.
-   Address:
+        description: >-
+          method you want to be contacted using this phone number. Either by
+          text or call.
+  Address:
     type: object
     properties:
       longtude:
@@ -1189,18 +1191,18 @@ definitions:
       country:
         type: string
         description: Country name of an address.
-   ChangePasswordResource:
+  ChangePasswordResource:
     type: object
     properties:
       proReferenceId:
         type: string
       email:
-       type: string
+        type: string
       oldPassword:
         type: string
       newPassword:
         type: string
-   LoginResource:
+  LoginResource:
     type: object
     required:
       - email
@@ -1210,7 +1212,7 @@ definitions:
         type: string
       password:
         type: string
-   LoginResponse:
+  LoginResponse:
     type: object
     required:
       - user-token
@@ -1229,36 +1231,38 @@ definitions:
         description: to be used in subsequent api calls
       user-token:
         type: string
-        description: expiring encrypted access token, to be used in all API call for the loggged in user
+        description: >-
+          expiring encrypted access token, to be used in all API call for the
+          loggged in user
       message:
         $ref: '#/definitions/MessageResource'
-   MessageResource:
+  MessageResource:
     type: object
     properties:
-     status:
-       type: integer
-       format: int32
-     detail:
-       type: string
-     developerMessage:
-      type: string
-   Error:
+      status:
+        type: integer
+        format: int32
+      detail:
+        type: string
+      developerMessage:
+        type: string
+  Error:
     type: object
     properties:
-     title:
-       type: string
-     status:
-       type: integer
-       format: int32
-     detail:
-       type: string
-     timeStamp:
-      type: number
-     developerMessage:
-      type: string
-     errors:
-      type: array
-      description: an Array of errors messages occured
-      items:
+      title:
+        type: string
+      status:
+        type: integer
+        format: int32
+      detail:
+        type: string
+      timeStamp:
+        type: number
+      developerMessage:
+        type: string
+      errors:
+        type: array
+        description: an Array of errors messages occured
+        items:
           type: string
           description: a specific error message
